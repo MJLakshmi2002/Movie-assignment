@@ -2,6 +2,8 @@ package org.example;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.time.Period;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
@@ -42,6 +44,9 @@ public class Main {
                     case 8 -> updateMovieRating();
                     case 9 -> deleteMovie();
                     case 10 -> sortMoviesByReleaseYear();
+                    case 11 -> getDirectorsWithMostMovies();
+                    case 12-> getActorsWithMultipleMovies();
+                    case 13 -> getMoviesOfYoungestActor();
                     case 14 -> {
                         System.out.println("Exiting program.");
                         return;
@@ -194,5 +199,37 @@ public class Main {
                 .limit(15)
                 .forEach(m -> System.out.println(m.title + " (" + m.year + ")"));
     }
+    private static void getDirectorsWithMostMovies() {
+        Map<Integer, Long> directorMovieCount = movies.movieList.stream()
+                .collect(Collectors.groupingBy(m -> m.dirID, Collectors.counting()));
 
+        directorMovieCount.entrySet().stream()
+                .sorted(Map.Entry.<Integer, Long>comparingByValue().reversed())
+                .limit(5)
+                .forEach(entry -> System.out.println(directors.directorMap.get(entry.getKey()).name + " - " + entry.getValue() + " movies"));
+    }
+
+    private static void getActorsWithMultipleMovies() {
+        Map<Integer, Long> actorMovieCount = movies.movieList.stream()
+                .flatMap(m -> m.actorIDs.stream())
+                .collect(Collectors.groupingBy(a -> a, Collectors.counting()));
+
+        actorMovieCount.entrySet().stream()
+                .sorted(Map.Entry.<Integer, Long>comparingByValue().reversed())
+                .limit(5)
+                .forEach(entry -> System.out.println(actors.actorMap.get(entry.getKey()).name + " - " + entry.getValue() + " movies"));
+    }
+
+    private static void getMoviesOfYoungestActor() {
+        LocalDate referenceDate = LocalDate.of(2025, 2, 10);
+        Optional<Actor.ActorDetail> youngestActor = actors.actorList.stream()
+                .min(Comparator.comparing(actor -> Period.between(actor.dateOfBirth, referenceDate).getYears()));
+
+        youngestActor.ifPresent(actor -> {
+            System.out.println("Youngest Actor: " + actor.name);
+            movies.movieList.stream()
+                    .filter(m -> m.actorIDs.contains(actor.id))
+                    .forEach(m -> System.out.println(m.title + " (" + m.year + ")"));
+        });
+    }
 }
