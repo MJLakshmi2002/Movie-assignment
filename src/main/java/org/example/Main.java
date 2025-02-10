@@ -39,6 +39,8 @@ public class Main {
                     case 5 -> getMoviesByReleaseYear();
                     case 6 -> getMoviesByReleaseYearRange();
                     case 7 -> addNewMovie();
+                    case 8 -> updateMovieRating();
+                    case 9 -> deleteMovie();
                     case 14 -> {
                         System.out.println("Exiting program.");
                         return;
@@ -160,5 +162,29 @@ public class Main {
         movies.movieList.add(newMovie);
         movies.movieMap.put(id, newMovie);
         System.out.println("Movie added successfully!");
+    }
+    private static void updateMovieRating() {
+        System.out.print("Enter Movie ID: ");
+        int movieId = scanner.nextInt();
+        System.out.print("Enter New Rating: ");
+        float newRating = scanner.nextFloat();
+        if (movies.movieMap.containsKey(movieId)) {
+            movies.movieMap.get(movieId).rating = newRating;
+            System.out.println("Movie rating updated successfully!");
+        } else {
+            System.out.println("Movie not found.");
+        }
+    }
+
+    private static void deleteMovie() {
+        System.out.print("Enter Movie ID: ");
+        int movieId = scanner.nextInt();
+        if (movies.movieMap.containsKey(movieId)) {
+            movies.movieList.removeIf(m -> m.id == movieId);
+            movies.movieMap.remove(movieId);
+            System.out.println("Movie deleted successfully!");
+        } else {
+            System.out.println("Movie not found.");
+        }
     }
     }
