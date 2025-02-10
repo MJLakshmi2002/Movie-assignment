@@ -33,6 +33,11 @@ public class Main {
 
                 switch (choice) {
                     case 1 -> getMovieInformation();
+                    case 2 -> getTopRatedMovies();
+                    case 3 -> getMoviesByGenre();
+                    case 4 -> getMoviesByDirector();
+                    case 5 -> getMoviesByReleaseYear();
+                    case 6 -> getMoviesByReleaseYearRange();
                     case 14 -> {
                         System.out.println("Exiting program.");
                         return;
@@ -82,6 +87,51 @@ public class Main {
             }
         });
         System.out.println();
+    }
+
+
+    private static void getTopRatedMovies() {
+        movies.movieList.stream()
+                .sorted(Comparator.comparingDouble((Movie.MovieDetail m) -> m.rating).reversed())
+                .limit(10)
+                .forEach(Main::displayMovieInfo);
+    }
+
+    private static void getMoviesByGenre() {
+        System.out.print("Enter Genre: ");
+        String genre = scanner.nextLine();
+        movies.movieList.stream()
+                .filter(m -> m.genre.equalsIgnoreCase(genre))
+                .forEach(Main::displayMovieInfo);
+    }
+
+    private static void getMoviesByDirector() {
+        System.out.print("Enter Director Name: ");
+        String directorName = scanner.nextLine();
+        directors.directorList.stream()
+                .filter(d -> d.name.equalsIgnoreCase(directorName))
+                .map(d -> d.id)
+                .flatMap(id -> movies.movieList.stream().filter(m -> m.dirID == id))
+                .forEach(Main::displayMovieInfo);
+    }
+
+    private static void getMoviesByReleaseYear() {
+        System.out.print("Enter Release Year: ");
+        int year = scanner.nextInt();
+        scanner.nextLine();
+        movies.movieList.stream()
+                .filter(m -> m.year == year)
+                .forEach(Main::displayMovieInfo);
+    }
+
+    private static void getMoviesByReleaseYearRange() {
+        System.out.print("Enter Year Range (e.g., 2010-2020): ");
+        String[] range = scanner.nextLine().split("-");
+        int startYear = Integer.parseInt(range[0].trim());
+        int endYear = Integer.parseInt(range[1].trim());
+        movies.movieList.stream()
+                .filter(m -> m.year >= startYear && m.year <= endYear)
+                .forEach(Main::displayMovieInfo);
     }
 
     }
