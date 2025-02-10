@@ -38,6 +38,7 @@ public class Main {
                     case 4 -> getMoviesByDirector();
                     case 5 -> getMoviesByReleaseYear();
                     case 6 -> getMoviesByReleaseYearRange();
+                    case 7 -> addNewMovie();
                     case 14 -> {
                         System.out.println("Exiting program.");
                         return;
@@ -134,4 +135,30 @@ public class Main {
                 .forEach(Main::displayMovieInfo);
     }
 
+    private static void addNewMovie() {
+        System.out.print("Enter Movie Title: ");
+        String title = scanner.nextLine();
+        System.out.print("Enter Release Year: ");
+        int year = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Enter Genre: ");
+        String genre = scanner.nextLine();
+        System.out.print("Enter Rating: ");
+        float rating = scanner.nextFloat();
+        System.out.print("Enter Duration: ");
+        int duration = scanner.nextInt();
+        System.out.print("Enter Director ID: ");
+        int dirID = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Enter Actor IDs (comma separated): ");
+        String[] actorIdsInput = scanner.nextLine().split(",");
+        ArrayList<Integer> actorIDs = new ArrayList<>();
+        for (String id : actorIdsInput) actorIDs.add(Integer.parseInt(id.trim()));
+
+        int id = movies.movieList.size() + 1;
+        Movie.MovieDetail newMovie = new Movie.MovieDetail(id, title, year, genre, rating, duration, dirID, actorIDs);
+        movies.movieList.add(newMovie);
+        movies.movieMap.put(id, newMovie);
+        System.out.println("Movie added successfully!");
+    }
     }
