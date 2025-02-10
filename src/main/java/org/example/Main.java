@@ -41,6 +41,7 @@ public class Main {
                     case 7 -> addNewMovie();
                     case 8 -> updateMovieRating();
                     case 9 -> deleteMovie();
+                    case 10 -> sortMoviesByReleaseYear();
                     case 14 -> {
                         System.out.println("Exiting program.");
                         return;
@@ -187,4 +188,11 @@ public class Main {
             System.out.println("Movie not found.");
         }
     }
+    private static void sortMoviesByReleaseYear() {
+        movies.movieList.stream()
+                .sorted(Comparator.comparingInt(m -> m.year))
+                .limit(15)
+                .forEach(m -> System.out.println(m.title + " (" + m.year + ")"));
     }
+
+}
